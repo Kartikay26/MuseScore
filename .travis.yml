@@ -60,6 +60,7 @@ matrix:
         directories:
           - $HOME/.ccache
           - .mtime_cache
+          - build.debug
       before_install:
         - "source build/travis/job1_Tests/environment.sh"
       install:
