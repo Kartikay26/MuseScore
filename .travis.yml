@@ -64,7 +64,7 @@ matrix:
       before_install:
         - "source build/travis/job1_Tests/environment.sh"
       install:
-        - ./mtime_cache ./**/*.{%{cpp}} -c .mtime_cache/cache.json
+        - "./mtime_cache ./**/*.{%{cpp}} -c .mtime_cache/cache.json"
         - "./build/travis/job1_Tests/install.sh"
       before_script:
         - "./build/travis/job1_Tests/before_script.sh"
