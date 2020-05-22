@@ -719,6 +719,9 @@ if (NOT MINGW AND NOT MSVC AND NOT APPLE)
     # Note: Must now run "update-mime-database" to apply changes. This is done in the Makefile.
 endif (NOT MINGW AND NOT MSVC AND NOT APPLE)
 
+set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address,undefined")
+set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address,undefined")
+
 #
 #  Create precompiled header file
 #
