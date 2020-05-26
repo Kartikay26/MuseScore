@@ -196,8 +196,10 @@ public:
 
     void deleteLater();
 
-    Element* parent() const { return _parent; }
-    void setParent(Element* e) { _parent = e; }
+    Element* parent() const;
+    void setParent(Element* e);
+
+    virtual Element* treeParent() const override;
 
     Element* findAncestor(ElementType t);
     const Element* findAncestor(ElementType t) const;

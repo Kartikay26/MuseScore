@@ -164,7 +164,7 @@ ScoreElement::ScoreElement(const ScoreElement& se)
 }
 
 //---------------------------------------------------------
-//   ~Element
+//   ~ScoreElement
 //---------------------------------------------------------
 
 ScoreElement::~ScoreElement()
@@ -177,6 +177,47 @@ ScoreElement::~ScoreElement()
         }
     }
     delete[] _propertyFlagsList;
+}
+
+//---------------------------------------------------------
+//   treeParent
+//---------------------------------------------------------
+
+ScoreElement* ScoreElement::treeParent() const
+{
+    return nullptr;
+}
+
+//---------------------------------------------------------
+//   treeChild
+//---------------------------------------------------------
+
+ScoreElement* ScoreElement::treeChild(int idx) const
+{
+    return _children[idx];
+}
+
+//---------------------------------------------------------
+//   treeChildIdx
+//---------------------------------------------------------
+
+int ScoreElement::treeChildIdx(ScoreElement* child) const
+{
+    for (int i = 0; i < _children.size(); i++) {
+        if (_children[i] == child) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+//---------------------------------------------------------
+//   treeChildCount
+//---------------------------------------------------------
+
+int ScoreElement::treeChildCount() const
+{
+    return _children.size();
 }
 
 //---------------------------------------------------------

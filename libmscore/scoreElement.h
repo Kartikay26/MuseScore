@@ -175,6 +175,7 @@ class ScoreElement
     static ElementStyle const emptyStyle;
 
 protected:
+    std::vector<ScoreElement*> _children;
     const ElementStyle* _elementStyle {& emptyStyle };
     PropertyFlags* _propertyFlagsList { 0 };
     LinkedElements* _links            { 0 };
@@ -185,6 +186,12 @@ public:
     ScoreElement(const ScoreElement& se);
 
     virtual ~ScoreElement();
+
+    // Score Heirachy functions.
+    virtual ScoreElement* treeParent() const;
+    virtual ScoreElement* treeChild(int idx) const;
+    virtual int treeChildIdx(ScoreElement* child) const;
+    virtual int treeChildCount() const;
 
     Score* score() const { return _score; }
     MasterScore* masterScore() const;

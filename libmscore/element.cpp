@@ -199,6 +199,38 @@ Element::Element(const Element& e) :
 Element::~Element()
 {
     Score::onElementDestruction(this);
+    // TODO: remove from parent's _children vector
+}
+
+//---------------------------------------------------------
+//   treeParent
+//---------------------------------------------------------
+
+Element* Element::treeParent()const
+{
+    return _parent;
+}
+
+//---------------------------------------------------------
+//   parent
+//---------------------------------------------------------
+
+Element* Element::parent() const
+{
+    return _parent;
+}
+
+//---------------------------------------------------------
+//   setParent
+//---------------------------------------------------------
+
+void Element::setParent(Element* e)
+{
+    _parent = e;
+    if (e != nullptr) {
+        // TODO: check parent's _children vector if child is already there
+        e->_children.push_back(this);
+    }
 }
 
 //---------------------------------------------------------
