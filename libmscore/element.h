@@ -161,7 +161,7 @@ public:
 
 class Element : public ScoreElement
 {
-    Element* _parent { 0 };
+    ScoreElement* _parent { 0 };
     mutable QRectF _bbox;         ///< Bounding box relative to _pos + _offset
     qreal _mag;                   ///< standard magnification (derived value)
     QPointF _pos;                 ///< Reference position, relative to _parent, set by autoplace
@@ -197,9 +197,9 @@ public:
     void deleteLater();
 
     Element* parent() const;
-    void setParent(Element* e);
+    void setParent(ScoreElement* e);
 
-    virtual Element* treeParent() const override;
+    virtual ScoreElement* treeParent() const override;
 
     Element* findAncestor(ElementType t);
     const Element* findAncestor(ElementType t) const;

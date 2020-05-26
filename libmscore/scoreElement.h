@@ -192,6 +192,7 @@ public:
     virtual ScoreElement* treeChild(int idx) const;
     virtual int treeChildIdx(ScoreElement* child) const;
     virtual int treeChildCount() const;
+    virtual void addChild(ScoreElement* el);
 
     Score* score() const { return _score; }
     MasterScore* masterScore() const;

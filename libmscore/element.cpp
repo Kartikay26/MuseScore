@@ -176,7 +176,7 @@ Element::Element(Score* s, ElementFlags f) :
 Element::Element(const Element& e) :
     ScoreElement(e)
 {
-    _parent     = e._parent;
+    setParent(e._parent);
     _bbox       = e._bbox;
     _mag        = e._mag;
     _pos        = e._pos;
@@ -206,7 +206,7 @@ Element::~Element()
 //   treeParent
 //---------------------------------------------------------
 
-Element* Element::treeParent()const
+ScoreElement* Element::treeParent()const
 {
     return _parent;
 }
@@ -217,19 +217,23 @@ Element* Element::treeParent()const
 
 Element* Element::parent() const
 {
-    return _parent;
+    if (Element* e = dynamic_cast<Element*>(_parent)) {
+        return e;
+    } else {
+        return nullptr;
+    }
 }
 
 //---------------------------------------------------------
 //   setParent
 //---------------------------------------------------------
 
-void Element::setParent(Element* e)
+void Element::setParent(ScoreElement* e)
 {
     _parent = e;
     if (e != nullptr) {
         // TODO: check parent's _children vector if child is already there
-        e->_children.push_back(this);
+        e->addChild(this);
     }
 }
 
@@ -1514,8 +1518,8 @@ Measure* Element::findMeasure()
 {
     if (isMeasure()) {
         return toMeasure(this);
-    } else if (_parent) {
-        return _parent->findMeasure();
+    } else if (parent()) {
+        return parent()->findMeasure();
     } else {
         return 0;
     }
@@ -1539,8 +1543,8 @@ MeasureBase* Element::findMeasureBase()
 {
     if (isMeasureBase()) {
         return toMeasureBase(this);
-    } else if (_parent) {
-        return _parent->findMeasureBase();
+    } else if (parent()) {
+        return parent()->findMeasureBase();
     } else {
         return 0;
     }
