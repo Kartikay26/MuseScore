@@ -127,6 +127,7 @@ class ScoreView : public QWidget, public MuseScoreView
 {
     Q_OBJECT
 
+    QTreeView * _scoreTreeView;
     ViewState state;
     OmrView* _omrView;
 
