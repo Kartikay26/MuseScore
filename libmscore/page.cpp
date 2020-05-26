@@ -39,6 +39,7 @@ Page::Page(Score* s) :
     Element(s, ElementFlag::NOT_SELECTABLE), _no(0)
 {
     bspTreeValid = false;
+    setParent(s);
 }
 
 Page::~Page()
@@ -314,27 +315,31 @@ QString Page::replaceTextMacros(const QString& s) const
     QString d;
     for (int i = 0, n = s.size(); i < n; ++i) {
         QChar c = s[i];
-        if (c == '$' && (i < (n-1))) {
-            QChar nc = s[i+1];
-            switch(nc.toLatin1()) {
-            case 'p': // not on first page 1
-                if (_no) // FALLTHROUGH
-            case 'N': // on page 1 only if there are multiple pages
-                if ( (score()->npages() + score()->pageNumberOffset()) > 1 ) // FALLTHROUGH
-            case 'P': // on all pages
-                {
-                int no = _no + 1 + score()->pageNumberOffset();
-                if (no > 0 )
-                      d += QString("%1").arg(no);
+        if (c == '$' && (i < (n - 1))) {
+            QChar nc = s[i + 1];
+            switch (nc.toLatin1()) {
+            case 'p':             // not on first page 1
+                if (_no) {             // FALLTHROUGH
+                case 'N':         // on page 1 only if there are multiple pages
+                    if ((score()->npages() + score()->pageNumberOffset()) > 1) {           // FALLTHROUGH
+                    case 'P':     // on all pages
+                    {
+                        int no = _no + 1 + score()->pageNumberOffset();
+                        if (no > 0) {
+                            d += QString("%1").arg(no);
+                        }
+                    }
+                    break;
+                    }
                 }
-                break;
             case 'n':
                 d += QString("%1").arg(score()->npages() + score()->pageNumberOffset());
                 break;
-            case 'i': // not on first page
-                if (_no) // FALLTHROUGH
-            case 'I':
-                d += score()->metaTag("partName").toHtmlEscaped();
+            case 'i':             // not on first page
+                if (_no) {             // FALLTHROUGH
+                case 'I':
+                    d += score()->metaTag("partName").toHtmlEscaped();
+                }
                 break;
             case 'f':
                 d += masterScore()->fileInfo()->completeBaseName().toHtmlEscaped();
@@ -346,55 +351,60 @@ QString Page::replaceTextMacros(const QString& s) const
                 d += QDate::currentDate().toString(Qt::DefaultLocaleShortDate);
                 break;
             case 'D':
-                {
+            {
                 QString creationDate = score()->metaTag("creationDate");
-                if (creationDate.isNull())
-                      d += masterScore()->fileInfo()->created().date().toString(Qt::DefaultLocaleShortDate);
-                else
-                      d += QDate::fromString(creationDate, Qt::ISODate).toString(Qt::DefaultLocaleShortDate);
+                if (creationDate.isNull()) {
+                    d += masterScore()->fileInfo()->created().date().toString(Qt::DefaultLocaleShortDate);
+                } else {
+                    d += QDate::fromString(creationDate, Qt::ISODate).toString(Qt::DefaultLocaleShortDate);
+                }
+            }
+            break;
+            case 'm':
+                if (score()->dirty()) {
+                    d += QTime::currentTime().toString(Qt::DefaultLocaleShortDate);
+                } else {
+                    d += masterScore()->fileInfo()->lastModified().time().toString(Qt::DefaultLocaleShortDate);
                 }
                 break;
-            case 'm':
-                if ( score()->dirty() )
-                      d += QTime::currentTime().toString(Qt::DefaultLocaleShortDate);
-                else
-                      d += masterScore()->fileInfo()->lastModified().time().toString(Qt::DefaultLocaleShortDate);
-                break;
             case 'M':
-                if ( score()->dirty() )
-                      d += QDate::currentDate().toString(Qt::DefaultLocaleShortDate);
-                else
-                      d += masterScore()->fileInfo()->lastModified().date().toString(Qt::DefaultLocaleShortDate);
+                if (score()->dirty()) {
+                    d += QDate::currentDate().toString(Qt::DefaultLocaleShortDate);
+                } else {
+                    d += masterScore()->fileInfo()->lastModified().date().toString(Qt::DefaultLocaleShortDate);
+                }
                 break;
-            case 'C': // only on first page
-                if (!_no) // FALLTHROUGH
-            case 'c':
-                d += score()->metaTag("copyright").toHtmlEscaped();
+            case 'C':             // only on first page
+                if (!_no) {             // FALLTHROUGH
+                case 'c':
+                    d += score()->metaTag("copyright").toHtmlEscaped();
+                }
                 break;
             case '$':
                 d += '$';
                 break;
             case ':':
-                {
+            {
                 QString tag;
-                int k = i+2;
+                int k = i + 2;
                 for (; k < n; ++k) {
-                      if (s[k].toLatin1() == ':')
-                            break;
-                      tag += s[k];
-                      }
-                if (k != n) {       // found ':' ?
-                      d += score()->metaTag(tag).toHtmlEscaped();
-                      i = k-1;
-                      }
+                    if (s[k].toLatin1() == ':') {
+                        break;
+                    }
+                    tag += s[k];
                 }
-                break;
+                if (k != n) {                     // found ':' ?
+                    d += score()->metaTag(tag).toHtmlEscaped();
+                    i = k - 1;
+                }
+            }
+            break;
             default:
                 d += '$';
                 d += nc;
                 break;
             }
-                ++i;
+            ++i;
         } else {
             d += c;
         }

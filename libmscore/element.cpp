@@ -199,7 +199,9 @@ Element::Element(const Element& e) :
 Element::~Element()
 {
     Score::onElementDestruction(this);
-    // TODO: remove from parent's _children vector
+    if (_parent != nullptr) {
+        _parent->removeChild(this);
+    }
 }
 
 //---------------------------------------------------------
@@ -231,9 +233,10 @@ Element* Element::parent() const
 void Element::setParent(ScoreElement* e)
 {
     _parent = e;
-    if (e != nullptr) {
-        // TODO: check parent's _children vector if child is already there
-        e->addChild(this);
+    if (_parent != nullptr) {
+        if (_parent->treeChildIdx(this) == -1) {
+            _parent->addChild(this);
+        }
     }
 }
 

@@ -230,6 +230,15 @@ void ScoreElement::addChild(ScoreElement* el)
 }
 
 //---------------------------------------------------------
+//   removeChild
+//---------------------------------------------------------
+
+void ScoreElement::removeChild(ScoreElement* el)
+{
+    _children.erase(std::remove(_children.begin(), _children.end(), el), _children.end());
+}
+
+//---------------------------------------------------------
 //   propertyDefault
 //---------------------------------------------------------
 
