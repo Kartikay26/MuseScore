@@ -84,6 +84,7 @@ public:
     virtual ElementType type() const = 0;
 
     virtual void setScore(Score* s) override;
+    virtual int treeIndex() const override { return _no; }
 
     MeasureBase* next() const { return _next; }
     MeasureBase* nextMM() const;

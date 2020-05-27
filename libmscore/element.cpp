@@ -208,7 +208,7 @@ Element::~Element()
 //   treeParent
 //---------------------------------------------------------
 
-ScoreElement* Element::treeParent()const
+ScoreElement* Element::treeParent() const
 {
     return _parent;
 }

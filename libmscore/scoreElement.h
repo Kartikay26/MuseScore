@@ -190,6 +190,7 @@ public:
     // Score Heirachy functions.
     virtual ScoreElement* treeParent() const;
     virtual ScoreElement* treeChild(int idx) const;
+    virtual int treeIndex() const;
     virtual int treeChildIdx(ScoreElement* child) const;
     virtual int treeChildCount() const;
     virtual void addChild(ScoreElement* el);

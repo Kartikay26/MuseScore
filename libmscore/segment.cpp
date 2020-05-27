@@ -183,6 +183,25 @@ void Segment::setScore(Score* score)
     }
 }
 
+//---------------------------------------------------------
+//   treeIndex
+//---------------------------------------------------------
+
+int Segment::treeIndex() const
+{
+    int i = 0;
+    Segment* cur = _prev;
+    while (cur != nullptr) {
+        cur = cur->_prev;
+        i++;
+    }
+    return i;
+}
+
+//---------------------------------------------------------
+//   ~Segment
+//---------------------------------------------------------
+
 Segment::~Segment()
 {
     for (Element* e : _elist) {

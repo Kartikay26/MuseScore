@@ -80,6 +80,7 @@ public:
     ElementType type() const override { return ElementType::SEGMENT; }
 
     void setScore(Score*) override;
+    virtual int treeIndex() const override;
 
     Segment* next() const { return _next; }
     Segment* next(SegmentType) const;

@@ -198,6 +198,19 @@ ScoreElement* ScoreElement::treeChild(int idx) const
 }
 
 //---------------------------------------------------------
+//   treeIndex
+///   return an int according to which the elements will
+///   be ordered in the tree.
+///   Eg. for measures return measure number and for pages,
+///   page number.
+//---------------------------------------------------------
+
+int ScoreElement::treeIndex() const
+{
+    return 0;
+}
+
+//---------------------------------------------------------
 //   treeChildIdx
 //---------------------------------------------------------
 
@@ -227,6 +240,9 @@ int ScoreElement::treeChildCount() const
 void ScoreElement::addChild(ScoreElement* el)
 {
     _children.push_back(el);
+    std::stable_sort(_children.begin(), _children.end(), [](ScoreElement* a, ScoreElement* b) {
+            return a->treeIndex() < b->treeIndex();
+        });
 }
 
 //---------------------------------------------------------
