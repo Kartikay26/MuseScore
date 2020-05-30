@@ -241,7 +241,9 @@ void ScoreElement::addChild(ScoreElement* el)
 {
     _children.push_back(el);
     std::stable_sort(_children.begin(), _children.end(), [](ScoreElement* a, ScoreElement* b) {
-            return a->treeIndex() < b->treeIndex();
+            int a_idx = a->treeIndex();
+            int b_idx = b->treeIndex();
+            return (a_idx == b_idx) ? (a < b) : (a_idx < b_idx);
         });
 }
 

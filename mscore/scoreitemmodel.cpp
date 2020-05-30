@@ -99,7 +99,7 @@ QModelIndex ScoreItemModel::parent(const QModelIndex& child) const
     ScoreElement* childElement = scoreElementFromIndex(child);
     ScoreElement* parentElement = childElement->treeParent();
 
-    if (parentElement == _scoreRoot) {
+    if (parentElement == _scoreRoot || parentElement == nullptr) {
         return QModelIndex();
     }
 
