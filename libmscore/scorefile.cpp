@@ -273,8 +273,13 @@ void Score::writeMovement(XmlWriter& xml, bool selectionOnly)
 //   write
 //---------------------------------------------------------
 
+void treeWrite(XmlWriter& xml, ScoreElement* s); // fwd decl - in treewrite.cpp
+
 void Score::write(XmlWriter& xml, bool selectionOnly)
 {
+    // EXPERIMENTAL CODE ==================================
+    treeWrite(xml, this); return;
+    // ====================================================
     if (isMaster()) {
         MasterScore* score = static_cast<MasterScore*>(this);
         while (score->prev()) {

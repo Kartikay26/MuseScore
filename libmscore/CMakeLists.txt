@@ -101,6 +101,7 @@ add_library (
       connector.cpp location.cpp skyline.cpp
       scorediff.cpp
       unrollrepeats.cpp
+      treewrite.cpp
       )
 
 if (AVSOMR)
