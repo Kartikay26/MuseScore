@@ -188,7 +188,7 @@ add_library(mscoreapp STATIC
       recordbutton.h greendotbutton prefsdialog.h prefsdialog.cpp
       stringutils.h stringutils.cpp
       scoreview.cpp editharmony.cpp editfiguredbass.cpp events.cpp
-      scoreitemmodel.cpp
+      scoreitemmodel.cpp scoretreeview.cpp
       editinstrument.cpp editstyle.cpp
       icons.cpp
       instrdialog.cpp instrwidget.cpp

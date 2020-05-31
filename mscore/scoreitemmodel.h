@@ -30,10 +30,9 @@ class ScoreItemModel : public QAbstractItemModel
 
 private:
     Score* _scoreRoot;
-    ScoreView* _view;
 
 public:
-    ScoreItemModel(ScoreView* view, QObject* parent = nullptr);
+    ScoreItemModel(Score* score, QObject* parent = nullptr);
 
     // compulsory overrides
     virtual int columnCount(const QModelIndex& parent = QModelIndex()) const override { Q_UNUSED(parent) return 1; }

@@ -17,12 +17,10 @@ namespace Ms {
 //   ScoreItemModel::ScoreItemModel
 //---------------------------------------------------------
 
-ScoreItemModel::ScoreItemModel(ScoreView* view, QObject* parent) :
+ScoreItemModel::ScoreItemModel(Score* score, QObject* parent) :
     QAbstractItemModel(parent)
 {
-    Q_ASSERT(view);
-    _view = view;
-    _scoreRoot = view->score();
+    _scoreRoot = score;
     Q_ASSERT(_scoreRoot);
 }
 

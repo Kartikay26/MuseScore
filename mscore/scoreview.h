@@ -37,6 +37,7 @@ class Measure;
 class System;
 class Score;
 class ScoreView;
+class ScoreTreeView;
 class Text;
 class MeasureBase;
 class Staff;
@@ -127,7 +128,7 @@ class ScoreView : public QWidget, public MuseScoreView
 {
     Q_OBJECT
 
-    QTreeView * _scoreTreeView;
+    ScoreTreeView* _scoreTreeView;
     ViewState state;
     OmrView* _omrView;
 
