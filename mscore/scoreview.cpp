@@ -207,7 +207,7 @@ ScoreView::ScoreView(QWidget* parent) :
         connect(seq, SIGNAL(stopped()), SLOT(seqStopped()));
     }
 
-    _scoreTreeView = new ScoreTreeView(this);
+    _scoreTreeView = new ScoreTreeView();
 }
 
 //---------------------------------------------------------
@@ -281,6 +281,7 @@ ScoreView::~ScoreView()
     delete _bgPixmap;
     delete _fgPixmap;
     delete shadowNote;
+    delete _scoreTreeView;
 }
 
 //---------------------------------------------------------
