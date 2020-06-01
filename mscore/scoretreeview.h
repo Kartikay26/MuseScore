@@ -8,8 +8,10 @@
 
 namespace Ms {
 
-class ScoreTreeView
+class ScoreTreeView : public QObject
 {
+    Q_OBJECT
+
     QDockWidget* _dock;
     QTreeView* _treeView;
     Score* _score;
@@ -18,6 +20,9 @@ public:
     ScoreTreeView();
     ~ScoreTreeView();
     void setScore(Score* s);
+
+public slots:
+    void clicked(const QModelIndex& cur);
 };
 
 } // namespace Ms
