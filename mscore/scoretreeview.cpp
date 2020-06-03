@@ -48,10 +48,26 @@ void ScoreTreeView::setScore(Score* s)
 void ScoreTreeView::clicked(const QModelIndex& cur)
 {
     ScoreElement* s = (ScoreElement*) cur.internalPointer();
-    if (Element* e = dynamic_cast<Element*>(s)) {
-        qDebug() << "selecting: " << e->name();
-        _score->select(e);
+
+    if (Element* root = dynamic_cast<Element*>(s)) {
+    
+        qDebug() << "Clicked: " << root->name();
+        _score->selection().deselectAll();
+        _score->selection().setState(SelState::LIST);
+
+        std::function<void(Element*)> selectChildren = [&](Element* el) -> void {
+            _score->selection().add(el);
+            qDebug() << "selecting: " << el->name();
+            for (int i = 0; i < el->treeChildCount(); i++) {
+                Element* ch = (Element*) el->treeChild(i); // Child of Element will always be Element, never ScoreElement
+                selectChildren(ch);
+            }
+        };
+        
+        selectChildren(root);
+        _score->setSelectionChanged(true);
         _score->update();
+
     }
 }
 
