@@ -1465,22 +1465,6 @@ Shape BarLine::shape() const
 }
 
 //---------------------------------------------------------
-//   scanElements
-//---------------------------------------------------------
-
-void BarLine::scanElements(void* data, void (* func)(void*, Element*), bool all)
-{
-    // if no width (staff has bar lines turned off) and not all requested, do nothing
-    if (width() == 0.0 && !all) {
-        return;
-    }
-    func(data, this);
-    for (Element* e : _el) {
-        e->scanElements(data, func, all);
-    }
-}
-
-//---------------------------------------------------------
 //   setTrack
 //---------------------------------------------------------
 

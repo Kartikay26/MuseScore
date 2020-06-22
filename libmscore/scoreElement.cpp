@@ -196,6 +196,25 @@ int ScoreElement::treeChildIdx(ScoreElement* child) const
 }
 
 //---------------------------------------------------------
+//   scanElements
+//---------------------------------------------------------
+
+void ScoreElement::scanElements(void* data, void (* func)(void*, Element*), bool all)
+{
+    if (isElement()){
+        if (all || toElement(this)->visible() || score()->showInvisible()) {
+            func(data, toElement(this));
+        }
+    }
+    for (ScoreElement* child : (*this)) {
+        if (child) {
+            child->scanElements(data, func, all);
+        }
+    }
+}
+
+
+//---------------------------------------------------------
 //   propertyDefault
 //---------------------------------------------------------
 

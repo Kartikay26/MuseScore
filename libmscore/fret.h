@@ -238,7 +238,6 @@ public:
     Element* drop(EditData&) override;
 
     void endEditDrag(EditData& editData) override;
-    void scanElements(void* data, void (* func)(void*, Element*), bool all=true) override;
 
     QVariant getProperty(Pid propertyId) const override;
     bool setProperty(Pid propertyId, const QVariant&) override;

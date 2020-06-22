@@ -268,7 +268,6 @@ public:
 
     RepeatMeasure* cmdInsertRepeatMeasure(int staffIdx);
 
-    void scanElements(void* data, void (* func)(void*, Element*), bool all=true) override;
     void createVoice(int track);
     void adjustToLen(Fraction, bool appendRestsIfNecessary = true);
 

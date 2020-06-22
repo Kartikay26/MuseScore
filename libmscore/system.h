@@ -115,8 +115,6 @@ public:
     void write(XmlWriter&) const override;
     void read(XmlReader&) override;
 
-    void scanElements(void* data, void (* func)(void*, Element*), bool all=true) override;
-
     void appendMeasure(MeasureBase*);
     void removeMeasure(MeasureBase*);
     void removeLastMeasure();

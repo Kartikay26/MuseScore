@@ -192,6 +192,8 @@ public:
     virtual ScoreElement* treeChild(int n) const { Q_UNUSED(n); return nullptr; }
     virtual int treeChildCount() const { return 0; }
 
+    void scanElements(void* data, void (* func)(void*, Element*), bool all=true);
+
     int treeChildIdx(ScoreElement* child) const;
 
     // For iterating over child elements

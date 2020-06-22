@@ -2508,40 +2508,6 @@ bool Measure::isFirstInSystem() const
 }
 
 //---------------------------------------------------------
-//   scanElements
-//---------------------------------------------------------
-
-void Measure::scanElements(void* data, void (* func)(void*, Element*), bool all)
-{
-    MeasureBase::scanElements(data, func, all);
-
-    int nstaves = score()->nstaves();
-    for (int staffIdx = 0; staffIdx < nstaves; ++staffIdx) {
-        if (!all && !(visible(staffIdx) && score()->staff(staffIdx)->show())) {
-            continue;
-        }
-        MStaff* ms = _mstaves[staffIdx];
-        func(data, ms->lines());
-        if (ms->vspacerUp()) {
-            func(data, ms->vspacerUp());
-        }
-        if (ms->vspacerDown()) {
-            func(data, ms->vspacerDown());
-        }
-        if (ms->noText()) {
-            func(data, ms->noText());
-        }
-    }
-
-    for (Segment* s = first(); s; s = s->next()) {
-        if (!s->enabled()) {
-            continue;
-        }
-        s->scanElements(data, func, all);
-    }
-}
-
-//---------------------------------------------------------
 //   connectTremolo
 ///   Connect two-notes tremolo and update duration types
 ///   for the involved chords.

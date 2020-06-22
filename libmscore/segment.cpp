@@ -1188,31 +1188,6 @@ Ms::Element* Segment::elementAt(int track) const
 }
 
 //---------------------------------------------------------
-//   scanElements
-//---------------------------------------------------------
-
-void Segment::scanElements(void* data, void (* func)(void*, Element*), bool all)
-{
-    for (int track = 0; track < score()->nstaves() * VOICES; ++track) {
-        int staffIdx = track / VOICES;
-        if (!all && !(measure()->visible(staffIdx) && score()->staff(staffIdx)->show())) {
-            track += VOICES - 1;
-            continue;
-        }
-        Element* e = element(track);
-        if (e == 0) {
-            continue;
-        }
-        e->scanElements(data, func, all);
-    }
-    for (Element* e : annotations()) {
-        if (all || e->systemFlag() || measure()->visible(e->staffIdx())) {
-            e->scanElements(data,  func, all);
-        }
-    }
-}
-
-//---------------------------------------------------------
 //   firstElement
 //   This function returns the first main element from a
 //   segment, or a barline if it spanns in the staff

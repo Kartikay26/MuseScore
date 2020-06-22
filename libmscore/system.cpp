@@ -1164,67 +1164,6 @@ MeasureBase* System::nextMeasure(const MeasureBase* m) const
 }
 
 //---------------------------------------------------------
-//   scanElements
-//    collect all visible elements
-//---------------------------------------------------------
-
-void System::scanElements(void* data, void (* func)(void*, Element*), bool all)
-{
-    if (vbox()) {
-        return;
-    }
-    for (Bracket* b : _brackets) {
-        func(data, b);
-    }
-
-    if (_systemDividerLeft) {
-        func(data, _systemDividerLeft);
-    }
-    if (_systemDividerRight) {
-        func(data, _systemDividerRight);
-    }
-
-    int idx = 0;
-    for (const SysStaff* st : _staves) {
-        if (all || st->show()) {
-            for (InstrumentName* t : st->instrumentNames) {
-                func(data, t);
-            }
-        }
-        ++idx;
-    }
-    for (SpannerSegment* ss : _spannerSegments) {
-        int staffIdx = ss->spanner()->staffIdx();
-        if (staffIdx == -1) {
-            qDebug("System::scanElements: staffIDx == -1: %s %p", ss->spanner()->name(), ss->spanner());
-            staffIdx = 0;
-        }
-        bool v = true;
-        Spanner* spanner = ss->spanner();
-        if (spanner->anchor() == Spanner::Anchor::SEGMENT || spanner->anchor() == Spanner::Anchor::CHORD) {
-            Element* se = spanner->startElement();
-            Element* ee = spanner->endElement();
-            bool v1 = true;
-            if (se && se->isChordRest()) {
-                ChordRest* cr = toChordRest(se);
-                Measure* m    = cr->measure();
-                v1            = m->visible(cr->staffIdx());
-            }
-            bool v2 = true;
-            if (!v1 && ee && ee->isChordRest()) {
-                ChordRest* cr = toChordRest(ee);
-                Measure* m    = cr->measure();
-                v2            = m->visible(cr->staffIdx());
-            }
-            v = v1 || v2;       // hide spanner if both chords are hidden
-        }
-        if (all || (score()->staff(staffIdx)->show() && _staves[staffIdx]->show() && v) || spanner->isVolta()) {
-            ss->scanElements(data, func, all);
-        }
-    }
-}
-
-//---------------------------------------------------------
 //   staffYpage
 //    return page coordinates
 //---------------------------------------------------------

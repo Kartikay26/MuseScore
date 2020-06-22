@@ -88,7 +88,6 @@ public:
     void      layout() override;
     QPointF   pagePos() const override;        ///< position in page coordinates
     void      read(XmlReader&) override;
-    void      scanElements(void* data, void (* func)(void*, Element*), bool all=true) override;
     void      setTrack(int val) override;
     void      write(XmlWriter&) const override;
     bool      readProperties(XmlReader&) override;

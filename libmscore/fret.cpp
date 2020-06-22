@@ -1258,20 +1258,6 @@ Element* FretDiagram::drop(EditData& data)
 }
 
 //---------------------------------------------------------
-//   scanElements
-//---------------------------------------------------------
-
-void FretDiagram::scanElements(void* data, void (* func)(void*, Element*), bool all)
-{
-    Q_UNUSED(all);
-    func(data, this);
-    // don't display harmony in palette
-    if (_harmony && !!parent()) {
-        func(data, _harmony);
-    }
-}
-
-//---------------------------------------------------------
 //   Write MusicXML
 //---------------------------------------------------------
 

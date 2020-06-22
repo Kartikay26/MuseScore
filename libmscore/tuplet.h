@@ -108,7 +108,6 @@ public:
     }
 
     void layout() override;
-    void scanElements(void* data, void (* func)(void*, Element*), bool all=true) override;
 
     void read(XmlReader&) override;
     void write(XmlWriter&) const override;

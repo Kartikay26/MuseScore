@@ -72,7 +72,6 @@ public:
     qreal rm() const;
 
     void draw(QPainter*) const override;
-    void scanElements(void* data, void (* func)(void*, Element*), bool all=true) override;
 
     QList<Element*> items(const QRectF& r);
     QList<Element*> items(const QPointF& p);

@@ -488,19 +488,6 @@ void Spanner::insertTimeUnmanaged(const Fraction& fromTick, const Fraction& len)
 }
 
 //---------------------------------------------------------
-//   scanElements
-//    used in palettes
-//---------------------------------------------------------
-
-void Spanner::scanElements(void* data, void (* func)(void*, Element*), bool all)
-{
-    Q_UNUSED(all);
-    for (SpannerSegment* seg : segments) {
-        seg->scanElements(data, func, true);
-    }
-}
-
-//---------------------------------------------------------
 //   setScore
 //---------------------------------------------------------
 

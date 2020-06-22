@@ -129,7 +129,6 @@ public:
 
     void removeElement(int track);
     void setElement(int track, Element* el);
-    void scanElements(void* data, void (* func)(void*, Element*), bool all=true) override;
 
     Measure* measure() const { return toMeasure(parent()); }
     System* system() const { return toSystem(parent()->parent()); }

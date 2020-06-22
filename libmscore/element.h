@@ -442,8 +442,6 @@ public:
 
     mutable bool itemDiscovered      { false };       ///< helper flag for bsp
 
-    virtual void scanElements(void* data, void (* func)(void*, Element*), bool all=true);
-
     virtual void reset() override;           // reset all properties & position to default
 
     virtual qreal mag() const { return _mag; }
