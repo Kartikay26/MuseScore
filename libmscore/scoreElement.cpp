@@ -201,11 +201,14 @@ int ScoreElement::treeChildIdx(ScoreElement* child) const
 
 void ScoreElement::scanElements(void* data, void (* func)(void*, Element*), bool all)
 {
+    // only leaf notes are to be scanned
+    // Exception! Page, Glissando, VBox, and Tuplet (and Note?) are also to be scanned
     if (isElement() && treeChildCount() == 0
         || type() == ElementType::PAGE 
         || type() == ElementType::GLISSANDO
         || type() == ElementType::VBOX 
-        || type() == ElementType::TUPLET) {
+        || type() == ElementType::TUPLET
+        || type() == ElementType::NOTE) {
 
         if (all || toElement(this)->visible() || score()->showInvisible()) {
             func(data, toElement(this));
