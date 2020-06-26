@@ -223,7 +223,7 @@ ScoreElement* Measure::treeChild(int idx) const
         }
     }
 
-    const std::multimap<int, Ms::Spanner*> spannerMap = score()->spanner();
+    const std::multimap<int, Ms::Spanner*>& spannerMap = score()->spanner();
     int start_tick = tick().ticks();
     for (auto i = spannerMap.lower_bound(start_tick); i != spannerMap.upper_bound(start_tick); ++i) {
         Spanner* s = i->second;
@@ -234,14 +234,24 @@ ScoreElement* Measure::treeChild(int idx) const
             idx--;
         }
     }
+    const std::set<Spanner*>& unmanagedSpanners = score()->unmanagedSpanners();
+    for (Spanner* s : unmanagedSpanners) {
+        if (s->treeParent() == this) {
+            if (idx == 0) {
+                return s;
+            }
+            idx--;
+        }
+    }
 
-    return nullptr;
+    return MeasureBase::treeChild(idx);
 }
 
 int Measure::treeChildCount() const
 {
     int numChildren = 0;
     numChildren += _segments.size();
+
     int nstaves = score()->nstaves();
     for (int staffIdx = 0; staffIdx < nstaves; ++staffIdx) {
         if (_mstaves[staffIdx]->lines()) {
@@ -258,7 +268,7 @@ int Measure::treeChildCount() const
         }
     }
 
-    const std::multimap<int, Ms::Spanner*> spannerMap = score()->spanner();
+    const std::multimap<int, Ms::Spanner*>& spannerMap = score()->spanner();
     int start_tick = tick().ticks();
     for (auto i = spannerMap.lower_bound(start_tick); i != spannerMap.upper_bound(start_tick); ++i) {
         Spanner* s = i->second;
@@ -266,7 +276,14 @@ int Measure::treeChildCount() const
             numChildren++;
         }
     }
+    const std::set<Spanner*>& unmanagedSpanners = score()->unmanagedSpanners();
+    for (Spanner* s : unmanagedSpanners) {
+        if (s->treeParent() == this) {
+            numChildren++;
+        }
+    }
 
+    numChildren += MeasureBase::treeChildCount();
     return numChildren;
 }
 
@@ -292,11 +309,20 @@ ScoreElement* Segment::treeChild(int idx) const
     idx -= _annotations.size();
 
     if (segmentType() == SegmentType::ChordRest) {
-        const std::multimap<int, Ms::Spanner*> spannerMap = score()->spanner();
+        const std::multimap<int, Ms::Spanner*>& spannerMap = score()->spanner();
         int start_tick = tick().ticks();
         for (auto i = spannerMap.lower_bound(start_tick); i != spannerMap.upper_bound(start_tick); ++i) {
             Spanner* s = i->second;
             if (s->anchor() == Spanner::Anchor::SEGMENT) {
+                if (idx == 0) {
+                    return s;
+                }
+                idx--;
+            }
+        }
+        const std::set<Spanner*>& unmanagedSpanners = score()->unmanagedSpanners();
+        for (Spanner* s : unmanagedSpanners) {
+            if (s->treeParent() == this) {
                 if (idx == 0) {
                     return s;
                 }
@@ -313,11 +339,17 @@ int Segment::treeChildCount() const
     int numChildren = _elist.size() + _annotations.size();
 
     if (segmentType() == SegmentType::ChordRest) {
-        const std::multimap<int, Ms::Spanner*> spannerMap = score()->spanner();
+        const std::multimap<int, Ms::Spanner*>& spannerMap = score()->spanner();
         int start_tick = tick().ticks();
         for (auto i = spannerMap.lower_bound(start_tick); i != spannerMap.upper_bound(start_tick); ++i) {
             Spanner* s = i->second;
             if (s->anchor() == Spanner::Anchor::SEGMENT) {
+                numChildren++;
+            }
+        }
+        const std::set<Spanner*>& unmanagedSpanners = score()->unmanagedSpanners();
+        for (Spanner* s : unmanagedSpanners) {
+            if (s->treeParent() == this) {
                 numChildren++;
             }
         }
@@ -353,7 +385,14 @@ ScoreElement* ChordRest::treeChild(int idx) const
         return _lyrics[idx];
     }
     idx -= _lyrics.size();
-    // TODO: add durationElement/tuplet?
+    const DurationElement* de = this;
+    while (de->tuplet() && de->tuplet()->elements().front() == de) {
+        if (idx == 0) {
+            return de->tuplet();
+        }
+        idx--;
+        de = de->tuplet();
+    }
     if (_tabDur) {
         if (idx == 0) {
             return _tabDur;
@@ -361,11 +400,20 @@ ScoreElement* ChordRest::treeChild(int idx) const
         idx--;
     }
 
-    const std::multimap<int, Ms::Spanner*> spannerMap = score()->spanner();
+    const std::multimap<int, Ms::Spanner*>& spannerMap = score()->spanner();
     int start_tick = tick().ticks();
     for (auto i = spannerMap.lower_bound(start_tick); i != spannerMap.upper_bound(start_tick); ++i) {
         Spanner* s = i->second;
         if (s->anchor() == Spanner::Anchor::CHORD && s->treeParent() == this) {
+            if (idx == 0) {
+                return s;
+            }
+            idx--;
+        }
+    }
+    const std::set<Spanner*>& unmanagedSpanners = score()->unmanagedSpanners();
+    for (Spanner* s : unmanagedSpanners) {
+        if (s->treeParent() == this) {
             if (idx == 0) {
                 return s;
             }
@@ -383,15 +431,26 @@ int ChordRest::treeChildCount() const
         numChildren++;
     }
     numChildren += _lyrics.size();
+    const DurationElement* de = this;
+    while (de->tuplet() && de->tuplet()->elements().front() == de) {
+        numChildren++;
+        de = de->tuplet();
+    }
     if (_tabDur) {
         numChildren++;
     }
 
-    const std::multimap<int, Ms::Spanner*> spannerMap = score()->spanner();
+    const std::multimap<int, Ms::Spanner*>& spannerMap = score()->spanner();
     int start_tick = tick().ticks();
     for (auto i = spannerMap.lower_bound(start_tick); i != spannerMap.upper_bound(start_tick); ++i) {
         Spanner* s = i->second;
         if (s->anchor() == Spanner::Anchor::CHORD) {
+            numChildren++;
+        }
+    }
+    const std::set<Spanner*>& unmanagedSpanners = score()->unmanagedSpanners();
+    for (Spanner* s : unmanagedSpanners) {
+        if (s->treeParent() == this) {
             numChildren++;
         }
     }
@@ -765,7 +824,7 @@ int BSymbol::treeChildCount() const
 
 ScoreElement* Tuplet::treeParent() const
 {
-    return measure();
+    return elements()[0];
 }
 
 ScoreElement* Tuplet::treeChild(int idx) const
