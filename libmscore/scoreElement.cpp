@@ -201,11 +201,17 @@ int ScoreElement::treeChildIdx(ScoreElement* child) const
 
 void ScoreElement::scanElements(void* data, void (* func)(void*, Element*), bool all)
 {
-    if (isElement()){
+    if (isElement() && treeChildCount() == 0
+        || type() == ElementType::PAGE 
+        || type() == ElementType::GLISSANDO
+        || type() == ElementType::VBOX 
+        || type() == ElementType::TUPLET) {
+
         if (all || toElement(this)->visible() || score()->showInvisible()) {
             func(data, toElement(this));
         }
     }
+
     for (ScoreElement* child : (*this)) {
         if (child) {
             child->scanElements(data, func, all);
