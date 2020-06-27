@@ -41,6 +41,7 @@ const char* tests[] = {
     "libmscore/layout/tst_benchmark",
     "libmscore/all_elements/tst_layout_elements",
     "libmscore/all_elements/tst_tree_model",
+    "libmscore/all_elements/tst_scanElements",
     "libmscore/instrumentchange/tst_instrumentchange",
     "libmscore/join/tst_join",
     "libmscore/transpose/tst_transpose",
