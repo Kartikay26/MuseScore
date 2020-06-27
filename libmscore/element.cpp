@@ -226,6 +226,30 @@ void Element::deleteLater()
 }
 
 //---------------------------------------------------------
+//   scanElements
+//---------------------------------------------------------
+
+void Element::scanElements(void* data, void (* func)(void*, Element*), bool all)
+{
+    // if leaf node, apply function on this element (after checking if it is visible)
+    // otherwise, recursively apply scanElements to all children
+    // (Note: apply function even if non-leaf node, to the following element types:
+    //        {PAGE, NOTE, REST, GLISSANDO, VBOX, TUPLET} )
+    if (treeChildCount() == 0) {
+        if (all || visible() || score()->showInvisible()) {
+            func(data, this);
+        }
+    } else {
+        for (ScoreElement* el : (*this)) {
+            if (el == nullptr) {
+                continue;
+            }
+            el->scanElements(data, func, all);
+        }
+    }
+}
+
+//---------------------------------------------------------
 //   scanElementsOld
 //---------------------------------------------------------
 

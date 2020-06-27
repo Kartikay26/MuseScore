@@ -2354,6 +2354,18 @@ QString Note::noteTypeUserName() const
 }
 
 //---------------------------------------------------------
+//   scanElements
+//---------------------------------------------------------
+
+void Note::scanElements(void* data, void (* func)(void*, Element*), bool all)
+{
+    Element::scanElements(data, func, all);
+    if (all || visible() || score()->showInvisible()) {
+        func(data, this);
+    }
+}
+
+//---------------------------------------------------------
 //   scanElementsOld
 //---------------------------------------------------------
 

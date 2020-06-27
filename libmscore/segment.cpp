@@ -1188,6 +1188,23 @@ Ms::Element* Segment::elementAt(int track) const
 }
 
 //---------------------------------------------------------
+//   scanElements
+//---------------------------------------------------------
+
+void Segment::scanElements(void* data, void (* func)(void*, Element*), bool all)
+{
+    for (ScoreElement* el : (*this)) {
+        if (el == nullptr) {
+            continue;
+        }
+        Element* e = toElement(el);
+        if (all || e->systemFlag() || measure()->visible(e->staffIdx())) {
+            e->scanElements(data, func, all);
+        }
+    }
+}
+
+//---------------------------------------------------------
 //   scanElementsOld
 //---------------------------------------------------------
 

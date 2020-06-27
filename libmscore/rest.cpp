@@ -686,6 +686,20 @@ qreal Rest::downPos() const
 }
 
 //---------------------------------------------------------
+//   scanElements
+//---------------------------------------------------------
+
+void Rest::scanElements(void* data, void (* func)(void*, Element*), bool all)
+{
+    if (!isGap()) {
+        func(data, this);
+    }
+    if (treeChildCount() > 0) {
+        Element::scanElements(data, func, all);
+    }
+}
+
+//---------------------------------------------------------
 //   scanElementsOld
 //---------------------------------------------------------
 
