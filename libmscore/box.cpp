@@ -66,9 +66,11 @@ void Box::layout()
 
 void Box::scanElements(void* data, void (* func)(void*, Element*), bool all)
 {
-    Element::scanElements(data, func, all);
     if (all || visible() || score()->showInvisible()) {
         func(data, this);
+    }
+    if (treeChildCount() > 0) {
+        Element::scanElements(data, func, all);
     }
 }
 

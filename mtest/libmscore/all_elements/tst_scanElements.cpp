@@ -41,9 +41,9 @@ private slots:
     void initTestCase();
     void tstScanElementsElements() { tstScanElements("layout_elements.mscx"); }
     void tstScanElementsTablature() { tstScanElements("layout_elements_tab.mscx"); }
-    // void tstScanElementsMoonlight() { tstScanElements("moonlight.mscx"); }
-    // void tstScanElementsGoldberg() { tstScanElements("goldberg.mscx"); }
-    // void tstScanElementsRepeats() { tstScanElements("../unrollrepeats/clef-key-ts-test.mscx"); }
+    void tstScanElementsMoonlight() { tstScanElements("moonlight.mscx"); }
+    void tstScanElementsGoldberg() { tstScanElements("goldberg.mscx"); }
+    void tstScanElementsRepeats() { tstScanElements("../unrollrepeats/clef-key-ts-test.mscx"); }
 
 public:
     std::map<ScoreElement*, int> elementsOld;
@@ -72,11 +72,15 @@ void TestScanElements::initTestCase()
 void TestScanElements::tstScanElements(QString file)
 {
     MasterScore* score = readScore(DIR + file);
+    
+    qDebug() << "Comparing scanElements with all = true";
     elementsOld.clear();
     elementsNew.clear();
     score->scanElementsOld(this, &scanOld, true);
     score->scanElements(this, &scanNew, true);
     compareOldNew();
+
+    qDebug() << "Comparing scanElements with all = false";
     elementsOld.clear();
     elementsNew.clear();
     score->scanElementsOld(this, &scanOld, false);
@@ -107,7 +111,7 @@ void TestScanElements::compareOldNew()
             int newCnt = elementsNew[el];
             if (oldCnt != newCnt) {
                 qDebug() << elementToText(el) << QString(" (oldCnt: %1, newCnt: %2)").arg(oldCnt).arg(newCnt);
-                // qDebug() << "Heirarchy: " << elementHeirarchy(el);
+                qDebug() << "Heirarchy: " << elementHeirarchy(el);
             }
         }
     }
