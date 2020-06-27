@@ -1193,6 +1193,9 @@ Ms::Element* Segment::elementAt(int track) const
 
 void Segment::scanElements(void* data, void (* func)(void*, Element*), bool all)
 {
+    if (!enabled()) {
+        return;
+    }
     for (ScoreElement* el : (*this)) {
         if (el == nullptr) {
             continue;
