@@ -60,6 +60,7 @@ public:
     Measure* measure() const override { return parent() ? toMeasure(parent()->parent()) : 0; }
     qreal mag() const override;
     void draw(QPainter*) const override;
+    void scanElements(void* data, void (* func)(void*, Element*), bool all = true) override;
     void scanElementsOld(void* data, void (* func)(void*, Element*), bool all = true) override;
     void setTrack(int val);
 

@@ -216,6 +216,18 @@ void Page::styleChanged()
 #endif
 
 //---------------------------------------------------------
+//   scanElements
+//---------------------------------------------------------
+
+void Page::scanElements(void* data, void (* func)(void*, Element*), bool all)
+{
+    Element::scanElements(data, func, all);
+    if (all || visible() || score()->showInvisible()) {
+        func(data, this);
+    }
+}
+
+//---------------------------------------------------------
 //   scanElementsOld
 //---------------------------------------------------------
 

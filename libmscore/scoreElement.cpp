@@ -199,10 +199,14 @@ int ScoreElement::treeChildIdx(ScoreElement* child) const
 //   scanElements
 //---------------------------------------------------------
 
-void ScoreElement::scanElements(void* data, void (* func)(void*, Element*), bool all) {
-    // TODO: implement this, write test and compare against scanElementsOld
+void ScoreElement::scanElements(void* data, void (* func)(void*, Element*), bool all)
+{
+    // Recursively apply scanElements to all children
+    // See also Element::scanElements
+    for (ScoreElement* el : (*this)) {
+        el->scanElements(data, func, all);
+    }
 }
-
 
 //---------------------------------------------------------
 //   propertyDefault

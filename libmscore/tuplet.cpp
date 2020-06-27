@@ -752,6 +752,18 @@ Shape Tuplet::shape() const
 }
 
 //---------------------------------------------------------
+//   scanElements
+//---------------------------------------------------------
+
+void Tuplet::scanElements(void* data, void (* func)(void*, Element*), bool all)
+{
+    Element::scanElements(data, func, all);
+    if (all || visible() || score()->showInvisible()) {
+        func(data, this);
+    }
+}
+
+//---------------------------------------------------------
 //   scanElementsOld
 //---------------------------------------------------------
 
