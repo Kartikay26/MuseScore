@@ -13,6 +13,7 @@
 #include <QtTest/QtTest>
 #include "mtest/testutils.h"
 #include "libmscore/score.h"
+#include "libmscore/page.h"
 
 #define DIR QString("libmscore/all_elements/")
 
@@ -41,7 +42,7 @@ private slots:
     void tstScanElementsElements() { tstScanElements("layout_elements.mscx"); }
     void tstScanElementsTablature() { tstScanElements("layout_elements_tab.mscx"); }
     void tstScanElementsMoonlight() { tstScanElements("moonlight.mscx"); }
-    // void tstScanElementsGoldberg() { tstScanElements("goldberg.mscx"); }
+    void tstScanElementsGoldberg() { tstScanElements("goldberg.mscx"); }
 
 public:
     std::set<ScoreElement*> elementsOld;
@@ -49,9 +50,9 @@ public:
 };
 
 QString elementToText(ScoreElement* element);
+QString elementHeirarchy(ScoreElement* element);
 void scanOld(void*, Element*);  // for use with scanElementsOld
 void scanNew(void*, Element*);  // for use with scanElements
-void compareOldNew();
 
 //---------------------------------------------------------
 //   initTestCase
@@ -98,12 +99,14 @@ void TestScanElements::compareOldNew()
         for (auto el : elementsOld) {
             if (!elementsNew.count(el)) {
                 qDebug() << elementToText(el);
+                qDebug() << "Heirarchy: " << elementHeirarchy(el);
             }
         }
         qDebug() << "Extra in elementsNew: ";
         for (auto el : elementsNew) {
             if (!elementsOld.count(el)) {
                 qDebug() << elementToText(el);
+                qDebug() << "Heirarchy: \n" << elementHeirarchy(el) << "\n";
             }
         }
     }
@@ -120,10 +123,23 @@ QString elementToText(ScoreElement* element)
     if (element == nullptr) {
         return "nullptr";
     }
+    if (element->isPage()) {
+        return QString("Page ") + QString::number(toPage(element)->no());
+    }
     if (element->isElement()) {
         return toElement(element)->userName() + " (" + toElement(element)->accessibleInfo() + ")";
     }
     return element->userName();
+}
+
+QString elementHeirarchy(ScoreElement* element)
+{
+    QString heirarchy = elementToText(element);
+    while (element->treeParent()) {
+        heirarchy += " < " + elementToText(element->treeParent());
+        element = element->treeParent();
+    }
+    return heirarchy;
 }
 
 QTEST_MAIN(TestScanElements)
