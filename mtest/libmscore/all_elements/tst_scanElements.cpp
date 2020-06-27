@@ -41,12 +41,14 @@ private slots:
     void initTestCase();
     void tstScanElementsElements() { tstScanElements("layout_elements.mscx"); }
     void tstScanElementsTablature() { tstScanElements("layout_elements_tab.mscx"); }
-    void tstScanElementsMoonlight() { tstScanElements("moonlight.mscx"); }
-    void tstScanElementsGoldberg() { tstScanElements("goldberg.mscx"); }
+    // void tstScanElementsMoonlight() { tstScanElements("moonlight.mscx"); }
+    // void tstScanElementsGoldberg() { tstScanElements("goldberg.mscx"); }
+    // void tstScanElementsRepeats() { tstScanElements("../unrollrepeats/clef-key-ts-test.mscx"); }
 
 public:
-    std::set<ScoreElement*> elementsOld;
-    std::set<ScoreElement*> elementsNew;
+    std::map<ScoreElement*, int> elementsOld;
+    std::map<ScoreElement*, int> elementsNew;
+    std::set<ScoreElement*> allElements;
 };
 
 QString elementToText(ScoreElement* element);
@@ -69,12 +71,14 @@ void TestScanElements::initTestCase()
 
 void TestScanElements::tstScanElements(QString file)
 {
+    MasterScore* score = readScore(DIR + file);
     elementsOld.clear();
     elementsNew.clear();
-    MasterScore* score = readScore(DIR + file);
     score->scanElementsOld(this, &scanOld, true);
     score->scanElements(this, &scanNew, true);
     compareOldNew();
+    elementsOld.clear();
+    elementsNew.clear();
     score->scanElementsOld(this, &scanOld, false);
     score->scanElements(this, &scanNew, false);
     compareOldNew();
@@ -83,30 +87,27 @@ void TestScanElements::tstScanElements(QString file)
 void scanOld(void* data, Element* el)
 {
     TestScanElements* test = static_cast<TestScanElements*>(data);
-    test->elementsOld.insert(el);
+    test->elementsOld[el]++;
+    test->allElements.insert(el);
 }
 
 void scanNew(void* data, Element* el)
 {
     TestScanElements* test = static_cast<TestScanElements*>(data);
-    test->elementsNew.insert(el);
+    test->elementsNew[el]++;
+    test->allElements.insert(el);
 }
 
 void TestScanElements::compareOldNew()
 {
     if (elementsOld != elementsNew) {
-        qDebug() << "Extra in elementsOld: ";
-        for (auto el : elementsOld) {
-            if (!elementsNew.count(el)) {
-                qDebug() << elementToText(el);
-                qDebug() << "Heirarchy: " << elementHeirarchy(el);
-            }
-        }
-        qDebug() << "Extra in elementsNew: ";
-        for (auto el : elementsNew) {
-            if (!elementsOld.count(el)) {
-                qDebug() << elementToText(el);
-                qDebug() << "Heirarchy: \n" << elementHeirarchy(el) << "\n";
+        qDebug() << "Element counts don't match for: ";
+        for (auto el : allElements) {
+            int oldCnt = elementsOld[el];
+            int newCnt = elementsNew[el];
+            if (oldCnt != newCnt) {
+                qDebug() << elementToText(el) << QString(" (oldCnt: %1, newCnt: %2)").arg(oldCnt).arg(newCnt);
+                // qDebug() << "Heirarchy: " << elementHeirarchy(el);
             }
         }
     }
