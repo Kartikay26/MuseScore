@@ -201,16 +201,16 @@ LineSegment* Glissando::createLineSegment()
 }
 
 //---------------------------------------------------------
-//   scanElements
+//   scanElementsOld
 //---------------------------------------------------------
 
-void Glissando::scanElements(void* data, void (* func)(void*, Element*), bool all)
+void Glissando::scanElementsOld(void* data, void (* func)(void*, Element*), bool all)
 {
     func(data, this);
     // don't scan segments belonging to systems; the systems themselves will scan them
     for (SpannerSegment* seg : spannerSegments()) {
         if (!seg->parent() || !seg->parent()->isSystem()) {
-            seg->scanElements(data, func, all);
+            seg->scanElementsOld(data, func, all);
         }
     }
 }

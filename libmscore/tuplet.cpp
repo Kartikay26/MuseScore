@@ -752,10 +752,10 @@ Shape Tuplet::shape() const
 }
 
 //---------------------------------------------------------
-//   scanElements
+//   scanElementsOld
 //---------------------------------------------------------
 
-void Tuplet::scanElements(void* data, void (* func)(void*, Element*), bool all)
+void Tuplet::scanElementsOld(void* data, void (* func)(void*, Element*), bool all)
 {
     if (_number && all) {
         func(data, _number);

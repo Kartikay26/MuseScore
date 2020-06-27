@@ -1188,10 +1188,10 @@ Ms::Element* Segment::elementAt(int track) const
 }
 
 //---------------------------------------------------------
-//   scanElements
+//   scanElementsOld
 //---------------------------------------------------------
 
-void Segment::scanElements(void* data, void (* func)(void*, Element*), bool all)
+void Segment::scanElementsOld(void* data, void (* func)(void*, Element*), bool all)
 {
     for (int track = 0; track < score()->nstaves() * VOICES; ++track) {
         int staffIdx = track / VOICES;
@@ -1203,11 +1203,11 @@ void Segment::scanElements(void* data, void (* func)(void*, Element*), bool all)
         if (e == 0) {
             continue;
         }
-        e->scanElements(data, func, all);
+        e->scanElementsOld(data, func, all);
     }
     for (Element* e : annotations()) {
         if (all || e->systemFlag() || measure()->visible(e->staffIdx())) {
-            e->scanElements(data,  func, all);
+            e->scanElementsOld(data,  func, all);
         }
     }
 }

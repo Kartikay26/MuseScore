@@ -1275,10 +1275,10 @@ Element* FretDiagram::drop(EditData& data)
 }
 
 //---------------------------------------------------------
-//   scanElements
+//   scanElementsOld
 //---------------------------------------------------------
 
-void FretDiagram::scanElements(void* data, void (* func)(void*, Element*), bool all)
+void FretDiagram::scanElementsOld(void* data, void (* func)(void*, Element*), bool all)
 {
     Q_UNUSED(all);
     func(data, this);

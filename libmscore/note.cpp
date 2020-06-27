@@ -2354,22 +2354,22 @@ QString Note::noteTypeUserName() const
 }
 
 //---------------------------------------------------------
-//   scanElements
+//   scanElementsOld
 //---------------------------------------------------------
 
-void Note::scanElements(void* data, void (* func)(void*, Element*), bool all)
+void Note::scanElementsOld(void* data, void (* func)(void*, Element*), bool all)
 {
     func(data, this);
     // tie segments are collected from System
     //      if (_tieFor && !staff()->isTabStaff(chord->tick()))  // no ties in tablature
-    //            _tieFor->scanElements(data, func, all);
+    //            _tieFor->scanElementsOld(data, func, all);
     for (Element* e : _el) {
         if (score()->tagIsValid(e->tag())) {
-            e->scanElements(data, func, all);
+            e->scanElementsOld(data, func, all);
         }
     }
     for (Spanner* sp : _spannerFor) {
-        sp->scanElements(data, func, all);
+        sp->scanElementsOld(data, func, all);
     }
 
     if (!dragMode && _accidental) {
@@ -2379,10 +2379,10 @@ void Note::scanElements(void* data, void (* func)(void*, Element*), bool all)
         func(data, dot);
     }
     if (_tieFor && !_tieFor->spannerSegments().empty()) {
-        _tieFor->spannerSegments().front()->scanElements(data, func, all);
+        _tieFor->spannerSegments().front()->scanElementsOld(data, func, all);
     }
     if (_tieBack && _tieBack->spannerSegments().size() > 1) {
-        _tieBack->spannerSegments().back()->scanElements(data, func, all);
+        _tieBack->spannerSegments().back()->scanElementsOld(data, func, all);
     }
 }
 

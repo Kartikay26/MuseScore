@@ -1888,25 +1888,25 @@ Fraction Score::inputPos() const
 }
 
 //---------------------------------------------------------
-//   scanElements
+//   scanElementsOld
 //    scan all elements
 //---------------------------------------------------------
 
-void Score::scanElements(void* data, void (* func)(void*, Element*), bool all)
+void Score::scanElementsOld(void* data, void (* func)(void*, Element*), bool all)
 {
     for (MeasureBase* mb = first(); mb; mb = mb->next()) {
-        mb->scanElements(data, func, all);
+        mb->scanElementsOld(data, func, all);
         if (mb->type() == ElementType::MEASURE) {
             Measure* m = toMeasure(mb);
             Measure* mmr = m->mmRest();
             if (mmr) {
-                mmr->scanElements(data, func, all);
+                mmr->scanElementsOld(data, func, all);
             }
         }
     }
     for (Page* page : pages()) {
         for (System* s :page->systems()) {
-            s->scanElements(data, func, all);
+            s->scanElementsOld(data, func, all);
         }
         func(data, page);
     }

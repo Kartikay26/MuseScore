@@ -91,7 +91,7 @@ public:
     QPointF pagePos() const override;        ///< position in page coordinates
     void layout() override;
     void layout2();
-    void scanElements(void* data, void (* func)(void*, Element*), bool all=true) override;
+    void scanElementsOld(void* data, void (* func)(void*, Element*), bool all=true) override;
     void setTrack(int t) override;
     void setScore(Score* s) override;
     void add(Element*) override;

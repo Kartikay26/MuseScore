@@ -1216,10 +1216,10 @@ qreal Chord::centerX() const
 }
 
 //---------------------------------------------------------
-//   scanElements
+//   scanElementsOld
 //---------------------------------------------------------
 
-void Chord::scanElements(void* data, void (* func)(void*, Element*), bool all)
+void Chord::scanElementsOld(void* data, void (* func)(void*, Element*), bool all)
 {
     for (Articulation* a : _articulations) {
         func(data, a);
@@ -1247,15 +1247,15 @@ void Chord::scanElements(void* data, void (* func)(void*, Element*), bool all)
     }
     size_t n = _notes.size();
     for (size_t i = 0; i < n; ++i) {
-        _notes.at(i)->scanElements(data, func, all);
+        _notes.at(i)->scanElementsOld(data, func, all);
     }
     for (Chord* chord : _graceNotes) {
-        chord->scanElements(data, func, all);
+        chord->scanElementsOld(data, func, all);
     }
     for (Element* e : el()) {
-        e->scanElements(data, func, all);
+        e->scanElementsOld(data, func, all);
     }
-    ChordRest::scanElements(data, func, all);
+    ChordRest::scanElementsOld(data, func, all);
 }
 
 //---------------------------------------------------------

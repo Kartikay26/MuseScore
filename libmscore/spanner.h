@@ -219,7 +219,7 @@ public:
     virtual void triggerLayoutAll() const override;
     virtual void add(Element*) override;
     virtual void remove(Element*) override;
-    virtual void scanElements(void* data, void (* func)(void*, Element*), bool all=true) override;
+    virtual void scanElementsOld(void* data, void (* func)(void*, Element*), bool all=true) override;
     bool removeSpannerBack();
     virtual void removeUnmanaged();
     virtual void insertTimeUnmanaged(const Fraction& tick, const Fraction& len);
