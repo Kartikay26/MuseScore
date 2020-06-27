@@ -115,14 +115,14 @@ void BSymbol::remove(Element* e)
 }
 
 //---------------------------------------------------------
-//   scanElements
+//   scanElementsOld
 //---------------------------------------------------------
 
-void BSymbol::scanElements(void* data, void (* func)(void*, Element*), bool all)
+void BSymbol::scanElementsOld(void* data, void (* func)(void*, Element*), bool all)
 {
     func(data, this);
     foreach (Element* e, _leafs) {
-        e->scanElements(data, func, all);
+        e->scanElementsOld(data, func, all);
     }
 }
 

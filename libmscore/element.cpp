@@ -226,10 +226,10 @@ void Element::deleteLater()
 }
 
 //---------------------------------------------------------
-//   scanElements
+//   scanElementsOld
 //---------------------------------------------------------
 
-void Element::scanElements(void* data, void (* func)(void*, Element*), bool all)
+void Element::scanElementsOld(void* data, void (* func)(void*, Element*), bool all)
 {
     if (all || visible() || score()->showInvisible()) {
         func(data, this);

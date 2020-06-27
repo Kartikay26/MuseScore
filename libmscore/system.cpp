@@ -1164,11 +1164,11 @@ MeasureBase* System::nextMeasure(const MeasureBase* m) const
 }
 
 //---------------------------------------------------------
-//   scanElements
+//   scanElementsOld
 //    collect all visible elements
 //---------------------------------------------------------
 
-void System::scanElements(void* data, void (* func)(void*, Element*), bool all)
+void System::scanElementsOld(void* data, void (* func)(void*, Element*), bool all)
 {
     if (vbox()) {
         return;
@@ -1196,7 +1196,7 @@ void System::scanElements(void* data, void (* func)(void*, Element*), bool all)
     for (SpannerSegment* ss : _spannerSegments) {
         int staffIdx = ss->spanner()->staffIdx();
         if (staffIdx == -1) {
-            qDebug("System::scanElements: staffIDx == -1: %s %p", ss->spanner()->name(), ss->spanner());
+            qDebug("System::scanElementsOld: staffIDx == -1: %s %p", ss->spanner()->name(), ss->spanner());
             staffIdx = 0;
         }
         bool v = true;
@@ -1219,7 +1219,7 @@ void System::scanElements(void* data, void (* func)(void*, Element*), bool all)
             v = v1 || v2;       // hide spanner if both chords are hidden
         }
         if (all || (score()->staff(staffIdx)->show() && _staves[staffIdx]->show() && v) || spanner->isVolta()) {
-            ss->scanElements(data, func, all);
+            ss->scanElementsOld(data, func, all);
         }
     }
 }

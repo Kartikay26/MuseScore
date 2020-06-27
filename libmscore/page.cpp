@@ -216,16 +216,16 @@ void Page::styleChanged()
 #endif
 
 //---------------------------------------------------------
-//   scanElements
+//   scanElementsOld
 //---------------------------------------------------------
 
-void Page::scanElements(void* data, void (* func)(void*, Element*), bool all)
+void Page::scanElementsOld(void* data, void (* func)(void*, Element*), bool all)
 {
     for (System* s :_systems) {
         for (MeasureBase* m : s->measures()) {
-            m->scanElements(data, func, all);
+            m->scanElementsOld(data, func, all);
         }
-        s->scanElements(data, func, all);
+        s->scanElementsOld(data, func, all);
     }
     func(data, this);
 }

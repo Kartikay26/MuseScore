@@ -24,7 +24,7 @@ using namespace Ms;
 ///   from Score each element in the tree should have the
 ///   correct parent element, the one whose children list
 ///   it appears in. Also ensures that all the elements
-///   scanned by scanElements appear in the tree model.
+///   scanned by scanElementsOld appear in the tree model.
 //---------------------------------------------------------
 
 class TestTreeModel : public QObject, public MTest
@@ -68,7 +68,7 @@ void TestTreeModel::tstTree(QString file)
 {
     MasterScore* score = readScore(DIR + file);
     traverseTree(score);
-    score->scanElements(this, &scan, true);
+    score->scanElementsOld(this, &scan, true);
 }
 
 void scan(void* data, Element* el)

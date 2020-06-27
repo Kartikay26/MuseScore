@@ -196,6 +196,15 @@ int ScoreElement::treeChildIdx(ScoreElement* child) const
 }
 
 //---------------------------------------------------------
+//   scanElements
+//---------------------------------------------------------
+
+void ScoreElement::scanElements(void* data, void (* func)(void*, Element*), bool all) {
+    // TODO: implement this, write test and compare against scanElementsOld
+}
+
+
+//---------------------------------------------------------
 //   propertyDefault
 //---------------------------------------------------------
 

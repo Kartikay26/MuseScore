@@ -2508,12 +2508,12 @@ bool Measure::isFirstInSystem() const
 }
 
 //---------------------------------------------------------
-//   scanElements
+//   scanElementsOld
 //---------------------------------------------------------
 
-void Measure::scanElements(void* data, void (* func)(void*, Element*), bool all)
+void Measure::scanElementsOld(void* data, void (* func)(void*, Element*), bool all)
 {
-    MeasureBase::scanElements(data, func, all);
+    MeasureBase::scanElementsOld(data, func, all);
 
     int nstaves = score()->nstaves();
     for (int staffIdx = 0; staffIdx < nstaves; ++staffIdx) {
@@ -2537,7 +2537,7 @@ void Measure::scanElements(void* data, void (* func)(void*, Element*), bool all)
         if (!s->enabled()) {
             continue;
         }
-        s->scanElements(data, func, all);
+        s->scanElementsOld(data, func, all);
     }
 }
 

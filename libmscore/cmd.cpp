@@ -2183,7 +2183,7 @@ void Score::cmdResetNoteAndRestGroupings()
 
 //---------------------------------------------------------
 //   resetElementShapePosition
-//    For use with Score::scanElements.
+//    For use with Score::scanElementsOld.
 //    Reset positions and autoplacement for the given
 //    element.
 //---------------------------------------------------------
@@ -2208,7 +2208,7 @@ static void resetElementPosition(void*, Element* e)
 void Score::cmdResetAllPositions()
 {
     startCmd();
-    scanElements(nullptr, resetElementPosition);
+    scanElementsOld(nullptr, resetElementPosition);
     endCmd();
 }
 

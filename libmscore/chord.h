@@ -188,7 +188,7 @@ public:
     void setNoteType(NoteType t) { _noteType = t; }
     bool isGrace() const { return _noteType != NoteType::NORMAL; }
     void toGraceAfter();
-    void scanElements(void* data, void (* func)(void*, Element*), bool all=true) override;
+    void scanElementsOld(void* data, void (* func)(void*, Element*), bool all=true) override;
 
     void setTrack(int val) override;
 
