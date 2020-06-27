@@ -757,9 +757,11 @@ Shape Tuplet::shape() const
 
 void Tuplet::scanElements(void* data, void (* func)(void*, Element*), bool all)
 {
-    Element::scanElements(data, func, all);
     if (all || visible() || score()->showInvisible()) {
         func(data, this);
+    }
+    if (treeChildCount() > 0 && all) { // scan number only if all is true
+        Element::scanElements(data, func, all);
     }
 }
 
