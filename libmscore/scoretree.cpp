@@ -66,7 +66,7 @@ ScoreElement* Score::treeParent() const
 
 ScoreElement* Score::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     // Should measure be the child instead of page?
     return pages()[idx];
 }
@@ -87,7 +87,7 @@ ScoreElement* Page::treeParent() const
 
 ScoreElement* Page::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     return systems()[idx];
 }
 
@@ -107,7 +107,7 @@ ScoreElement* System::treeParent() const
 
 ScoreElement* System::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     if (idx < int(brackets().size())) {
         return brackets()[idx];
     }
@@ -165,7 +165,7 @@ ScoreElement* MeasureBase::treeParent() const
 
 ScoreElement* MeasureBase::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     return el()[idx];
 }
 
@@ -185,7 +185,7 @@ ScoreElement* Measure::treeParent() const
 
 ScoreElement* Measure::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     // TODO: check for MMRest
     Segment* seg = _segments.first();
     while (seg) {
@@ -298,7 +298,7 @@ ScoreElement* Segment::treeParent() const
 
 ScoreElement* Segment::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     if (idx < int(_elist.size())) {
         return _elist[idx];
     }
@@ -374,7 +374,7 @@ ScoreElement* ChordRest::treeParent() const
 
 ScoreElement* ChordRest::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     if (beam() && beam()->treeParent() == this) {
         if (idx == 0) {
             return beam();
@@ -469,7 +469,7 @@ ScoreElement* Chord::treeParent() const
 
 ScoreElement* Chord::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
 
     if (idx < int(notes().size())) {
         return notes()[idx];
@@ -567,7 +567,7 @@ ScoreElement* Rest::treeParent() const
 
 ScoreElement* Rest::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     if (idx < int(_dots.size())) {
         return _dots[idx];
     }
@@ -591,7 +591,7 @@ ScoreElement* Note::treeParent() const
 
 ScoreElement* Note::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     if (accidental()) {
         if (idx == 0) {
             return accidental();
@@ -688,7 +688,7 @@ ScoreElement* Ambitus::treeParent() const
 
 ScoreElement* Ambitus::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     Accidental* topAccid = const_cast<Accidental*>(&_topAccid);
     Accidental* bottomAccid = const_cast<Accidental*>(&_bottomAccid);
     // TODO: check if accidentalType() == AccidentalType::NONE?
@@ -732,7 +732,7 @@ ScoreElement* FretDiagram::treeParent() const
 
 ScoreElement* FretDiagram::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     if (idx == 0) {
         return harmony();
     }
@@ -769,7 +769,7 @@ ScoreElement* Spanner::treeParent() const
 
 ScoreElement* Spanner::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     return spannerSegments()[idx];
 }
 
@@ -792,7 +792,7 @@ ScoreElement* SpannerSegment::treeChild(int idx) const
 #ifdef NDEBUG
     Q_UNUSED(idx)
 #endif
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     return nullptr;
 }
 
@@ -812,7 +812,7 @@ ScoreElement* BSymbol::treeParent() const
 
 ScoreElement* BSymbol::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     return _leafs[idx];
 }
 
@@ -832,7 +832,7 @@ ScoreElement* Tuplet::treeParent() const
 
 ScoreElement* Tuplet::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     if (idx == 0) {
         return _number;
     }
@@ -858,7 +858,7 @@ ScoreElement* BarLine::treeParent() const
 
 ScoreElement* BarLine::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     return _el[idx];
 }
 
@@ -878,7 +878,7 @@ ScoreElement* Trill::treeParent() const
 
 ScoreElement* Trill::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     if (accidental()) {
         if (idx == 0) {
             return accidental();
@@ -907,7 +907,7 @@ ScoreElement* TBox::treeParent() const
 
 ScoreElement* TBox::treeChild(int idx) const
 {
-    Q_ASSERT(0 <= idx && idx <= treeChildCount());
+    Q_ASSERT(0 <= idx && idx < treeChildCount());
     if (idx == 0) {
         return _text;
     }
