@@ -50,6 +50,31 @@ MeasureBase::MeasureBase(const MeasureBase& m)
 }
 
 //---------------------------------------------------------
+//   setNext
+//---------------------------------------------------------
+
+void MeasureBase::setNext(MeasureBase* e)
+{
+    _next = e;
+}
+
+//---------------------------------------------------------
+//   setPrev
+///   sets _prev measure, and if the current one doesn't
+///   have a system but the prev one does, then adds it
+///   to that system
+//---------------------------------------------------------
+
+void MeasureBase::setPrev(MeasureBase* e)
+{
+    _prev = e;
+    if (!system() && _prev && _prev->system()) {
+        setSystem(_prev->system());
+        _prev->system()->appendMeasure(this);
+    }
+}
+
+//---------------------------------------------------------
 //   clearElements
 //---------------------------------------------------------
 

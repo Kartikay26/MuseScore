@@ -92,10 +92,10 @@ public:
 
     MeasureBase* next() const { return _next; }
     MeasureBase* nextMM() const;
-    void setNext(MeasureBase* e) { _next = e; }
+    void setNext(MeasureBase* e);
     MeasureBase* prev() const { return _prev; }
     MeasureBase* prevMM() const;
-    void setPrev(MeasureBase* e) { _prev = e; }
+    void setPrev(MeasureBase* e);
 
     Ms::Measure* nextMeasure() const;
     Ms::Measure* prevMeasure() const;
