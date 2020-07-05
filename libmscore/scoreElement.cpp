@@ -204,7 +204,9 @@ void ScoreElement::scanElements(void* data, void (* func)(void*, Element*), bool
     // Recursively apply scanElements to all children
     // See also Element::scanElements
     for (ScoreElement* el : (*this)) {
-        el->scanElements(data, func, all);
+        if (el) {
+            el->scanElements(data, func, all);
+        }
     }
 }
 

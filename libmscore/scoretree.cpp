@@ -67,13 +67,22 @@ ScoreElement* Score::treeParent() const
 ScoreElement* Score::treeChild(int idx) const
 {
     Q_ASSERT(0 <= idx && idx < treeChildCount());
-    // Should measure be the child instead of page?
-    return pages()[idx];
+    if (idx < pages().size()) {
+        return pages()[idx];
+    }
+    idx -= pages().size();
+    for (MeasureBase* m : _unaddedMeasures) {
+        if (idx == 0) {
+            return m;
+        }
+        idx--;
+    }
+    return nullptr;
 }
 
 int Score::treeChildCount() const
 {
-    return pages().size();
+    return pages().size() + unaddedMeasures().size();
 }
 
 //---------------------------------------------------------

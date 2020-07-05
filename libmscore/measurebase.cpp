@@ -33,6 +33,7 @@ MeasureBase::MeasureBase(Score* score)
     : Element(score)
 {
     setIrregular(true);
+    score->_unaddedMeasures.insert(this);
 }
 
 MeasureBase::MeasureBase(const MeasureBase& m)
@@ -44,6 +45,7 @@ MeasureBase::MeasureBase(const MeasureBase& m)
     _no       = m._no;
     _noOffset = m._noOffset;
 
+    score()->_unaddedMeasures.insert(this);
     for (Element* e : m._el) {
         add(e->clone());
     }
@@ -83,11 +85,23 @@ void MeasureBase::setScore(Score* score)
 }
 
 //---------------------------------------------------------
+//   setSystem
+//---------------------------------------------------------
+
+void MeasureBase::setSystem(System* s) {
+    if (s) {
+        score()->unaddedMeasures().erase(this);
+    }
+    setParent((Element*)s);
+}
+
+//---------------------------------------------------------
 //   MeasureBase
 //---------------------------------------------------------
 
 MeasureBase::~MeasureBase()
 {
+    score()->unaddedMeasures().erase(this);
     qDeleteAll(_el);
 }
 

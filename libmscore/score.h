@@ -1193,6 +1193,9 @@ public:
     void addUnmanagedSpanner(Spanner*);
     void removeUnmanagedSpanner(Spanner*);
 
+    std::set<MeasureBase*> _unaddedMeasures;  ///< Measures that haven't been added to systems yet
+    std::set<MeasureBase*> unaddedMeasures() const { return _unaddedMeasures; }
+
     Hairpin* addHairpin(HairpinType, const Fraction& tickStart, const Fraction& tickEnd, int track);
     Hairpin* addHairpin(HairpinType, ChordRest* cr1, ChordRest* cr2 = nullptr, bool toCr2End = true);
 
