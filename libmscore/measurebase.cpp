@@ -69,6 +69,9 @@ void MeasureBase::setPrev(MeasureBase* e)
 {
     _prev = e;
     if (!system() && _prev && _prev->system()) {
+        if (isMeasure() && toMeasure(this)->hasMMRest() && score()->styleB(Sid::createMultiMeasureRests)) {
+            return;
+        }
         setSystem(_prev->system());
         _prev->system()->appendMeasure(this);
     }
