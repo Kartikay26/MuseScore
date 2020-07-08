@@ -2175,6 +2175,9 @@ void Score::createMMRest(Measure* m, Measure* lm, const Fraction& len)
     MeasureBase* nm = _showVBox ? lm->next() : lm->nextMeasure();
     mmr->setNext(nm);
     mmr->setPrev(m->prev());
+    if (mmr->system()) { // JUGAAD
+        mmr->system()->removeLastMeasure();
+    }
 }
 
 //---------------------------------------------------------
