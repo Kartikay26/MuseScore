@@ -30,7 +30,7 @@ namespace Ms {
 //---------------------------------------------------------
 
 P_TYPE unwritable[] = {
-    P_TYPE::POINT_MM, P_TYPE::SIZE_MM, P_TYPE::TDURATION, P_TYPE::BEAM_MODE,
+    P_TYPE::POINT_MM, P_TYPE::SIZE_MM, P_TYPE::BEAM_MODE,
     P_TYPE::TEMPO,    P_TYPE::GROUPS,  P_TYPE::INT_LIST,
 };
 
@@ -131,6 +131,7 @@ void Measure::treeWriteStaff(XmlWriter& xml, int staffIdx)
     }
     // write voice 1 first, then voice 2, .. upto VOICES
     for (int voice = 0; voice < VOICES; voice++) {
+        xml.stag("voice");
         int track = staffIdx * VOICES + voice;
         for (const Segment& s : segments()) {
             Element* e = s.element(track);
@@ -138,7 +139,8 @@ void Measure::treeWriteStaff(XmlWriter& xml, int staffIdx)
                 e->treeWrite(xml);
             }
         }
+        xml.etag(); // voice
     }
-    xml.etag();
+    xml.etag(); // measure
 }
 } // namespace Ms
