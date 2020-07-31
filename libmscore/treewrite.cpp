@@ -21,28 +21,87 @@
 #include "score.h"
 #include "scoreElement.h"
 #include "staff.h"
+#include "spanner.h"
 #include "measure.h"
 
 namespace Ms {
 //---------------------------------------------------------
 //   writable
-///   Check if property can be written
+///   Check if property / element / etc should be written
 //---------------------------------------------------------
 
-P_TYPE unwritable[] = {
-    P_TYPE::POINT_MM, P_TYPE::SIZE_MM, P_TYPE::BEAM_MODE,
-    P_TYPE::TEMPO,    P_TYPE::GROUPS,  P_TYPE::INT_LIST,
+ElementType dontWriteTheseElements[] = {
+    ElementType::BEAM,       ElementType::LEDGER_LINE, ElementType::TUPLET,
+    ElementType::SLUR,       ElementType::TIE,         ElementType::GLISSANDO,
+    ElementType::LYRICSLINE, ElementType::TEXTLINE,    ElementType::STAFF_LINES,
 };
 
-bool writable(Pid p)
+bool writable(ScoreElement* e)
 {
-    for (P_TYPE x : unwritable) {
-        if (propertyType(p) == x) {
+    for (ElementType t : dontWriteTheseElements) {
+        if (e->type() == t) {
             return false;
         }
     }
     return true;
 }
+
+std::map<ElementType, std::vector<Pid> > propertiesToWrite = {
+    {
+        ElementType::NOTE,
+        {
+            Pid::PITCH, Pid::TPC1, Pid::TPC2, Pid::SMALL, Pid::MIRROR_HEAD,
+            Pid::DOT_POSITION, Pid::HEAD_SCHEME, Pid::HEAD_GROUP, Pid::VELO_OFFSET,
+            Pid::PLAY, Pid::TUNING, Pid::FRET, Pid::STRING, Pid::GHOST,
+            Pid::HEAD_TYPE, Pid::VELO_TYPE, Pid::FIXED, Pid::FIXED_LINE,
+        }
+    },
+    {
+        ElementType::CHORD,
+        {
+            Pid::SMALL, Pid::STAFF_MOVE, Pid::DURATION_TYPE, Pid::DURATION
+        }
+    },
+    {
+        ElementType::REST,
+        {
+            Pid::SMALL, Pid::STAFF_MOVE, Pid::DURATION_TYPE, Pid::DURATION
+        }
+    },
+    {
+        ElementType::ACCIDENTAL,
+        {
+            Pid::ACCIDENTAL_BRACKET, Pid::ROLE, Pid::SMALL, Pid::ACCIDENTAL_TYPE,
+        }
+    },
+    {
+        ElementType::LAYOUT_BREAK,
+        {
+            Pid::LAYOUT_BREAK,
+        }
+    },
+    {
+        ElementType::CLEF,
+        {
+            Pid::CLEF_TYPE_CONCERT,
+            Pid::CLEF_TYPE_TRANSPOSING,
+        }
+    },
+    {
+        ElementType::CLEF,
+        {
+            Pid::CLEF_TYPE_CONCERT,
+            Pid::CLEF_TYPE_TRANSPOSING,
+        }
+    },
+    {
+        ElementType::KEYSIG,
+        {
+            Pid::KEYSIG_MODE,
+            Pid::SHOW_COURTESY,
+        }
+    },
+};
 
 //---------------------------------------------------------
 //   writeAllProperties
@@ -50,14 +109,26 @@ bool writable(Pid p)
 
 static void writeAllProperties(XmlWriter& xml, Element* e)
 {
-    for (int p = 0; p < int(Pid::END); p++) {
-        if (!writable(Pid(p))) {
-            continue;
-        }
-        if (e->getProperty(Pid(p)).isValid()) {
+    for (auto p : propertiesToWrite[e->type()]) {
+        if (e->getProperty(p).isValid()) {
             e->writeProperty(xml, Pid(p));
         }
     }
+}
+
+//---------------------------------------------------------
+//   anyElementsInTrack
+//---------------------------------------------------------
+
+static bool anyElementsInTrack(Measure* m, int track)
+{
+    for (const Segment& s : m->segments()) {
+        Element* e = s.element(track);
+        if (e) {
+            return true;
+        }
+    }
+    return false;
 }
 
 //---------------------------------------------------------
@@ -79,7 +150,7 @@ void ScoreElement::treeWrite(XmlWriter& xml)
 
 void Element::treeWrite(XmlWriter& xml)
 {
-    if (generated()) {
+    if (generated() || !writable(this)) {
         return;
     }
     xml.stag(this);
@@ -88,6 +159,15 @@ void Element::treeWrite(XmlWriter& xml)
         ch->treeWrite(xml);
     }
     xml.etag();
+}
+
+//---------------------------------------------------------
+//   for Spanners
+//---------------------------------------------------------
+
+void Spanner::treeWrite(XmlWriter& xml)
+{
+    this->writeSpannerStart(xml, toElement(treeParent()), track());
 }
 
 //---------------------------------------------------------
@@ -131,8 +211,12 @@ void Measure::treeWriteStaff(XmlWriter& xml, int staffIdx)
     }
     // write voice 1 first, then voice 2, .. upto VOICES
     for (int voice = 0; voice < VOICES; voice++) {
-        xml.stag("voice");
         int track = staffIdx * VOICES + voice;
+        // check if voice empty?
+        if (!anyElementsInTrack(this, track)) {
+            continue;
+        }
+        xml.stag("voice");
         for (const Segment& s : segments()) {
             Element* e = s.element(track);
             if (e) {
