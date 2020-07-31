@@ -26,7 +26,7 @@
 
 namespace Ms {
 //---------------------------------------------------------
-//   writable
+//   shouldWrite
 ///   Check if property / element / etc should be written
 //---------------------------------------------------------
 
@@ -36,7 +36,7 @@ ElementType dontWriteTheseElements[] = {
     ElementType::LYRICSLINE, ElementType::TEXTLINE,    ElementType::STAFF_LINES,
 };
 
-bool writable(ScoreElement* e)
+static bool shouldWrite(ScoreElement* e)
 {
     for (ElementType t : dontWriteTheseElements) {
         if (e->type() == t) {
@@ -59,7 +59,7 @@ std::map<ElementType, std::vector<Pid> > propertiesToWrite = {
     {
         ElementType::CHORD,
         {
-            Pid::SMALL, Pid::STAFF_MOVE, Pid::DURATION_TYPE, Pid::DURATION
+            Pid::SMALL, Pid::STAFF_MOVE, Pid::DURATION_TYPE, Pid::DURATION, Pid::STEM_DIRECTION
         }
     },
     {
@@ -99,8 +99,33 @@ std::map<ElementType, std::vector<Pid> > propertiesToWrite = {
         {
             Pid::KEYSIG_MODE,
             Pid::SHOW_COURTESY,
+            Pid::KEY,
         }
     },
+    {
+        ElementType::VBOX,
+        {
+            Pid::BOX_HEIGHT, Pid::BOX_WIDTH, Pid::TOP_GAP, Pid::BOTTOM_GAP,
+            Pid::LEFT_MARGIN, Pid::RIGHT_MARGIN, Pid::TOP_MARGIN, Pid::BOTTOM_MARGIN,
+        }
+    },
+    {
+        ElementType::HBOX,
+        {
+            Pid::BOX_HEIGHT, Pid::BOX_WIDTH, Pid::TOP_GAP, Pid::BOTTOM_GAP,
+            Pid::LEFT_MARGIN, Pid::RIGHT_MARGIN, Pid::TOP_MARGIN, Pid::BOTTOM_MARGIN,
+            Pid::CREATE_SYSTEM_HEADER,
+        }
+    },
+    {
+        ElementType::TEXT,
+        {
+            Pid::SUB_STYLE, Pid::FONT_FACE, Pid::FONT_SIZE, Pid::FONT_STYLE, Pid::COLOR,
+            Pid::FRAME_TYPE, Pid::FRAME_WIDTH, Pid::FRAME_PADDING, Pid::FRAME_ROUND,
+            Pid::FRAME_FG_COLOR, Pid::FRAME_BG_COLOR, Pid::ALIGN,
+            Pid::TEXT
+        }
+    }
 };
 
 //---------------------------------------------------------
@@ -150,7 +175,13 @@ void ScoreElement::treeWrite(XmlWriter& xml)
 
 void Element::treeWrite(XmlWriter& xml)
 {
-    if (generated() || !writable(this)) {
+    if (isTuplet()) {
+        qDebug();
+    }
+    if (generated()) {
+        return;
+    }
+    if (!isUserModified() && !shouldWrite(this)) {
         return;
     }
     xml.stag(this);
@@ -212,6 +243,7 @@ void Measure::treeWriteStaff(XmlWriter& xml, int staffIdx)
     // write voice 1 first, then voice 2, .. upto VOICES
     for (int voice = 0; voice < VOICES; voice++) {
         int track = staffIdx * VOICES + voice;
+        xml.setCurTrack(track);
         // check if voice empty?
         if (!anyElementsInTrack(this, track)) {
             continue;
