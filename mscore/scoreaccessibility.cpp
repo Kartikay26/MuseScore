@@ -2,6 +2,7 @@
 #include <QWidget>
 #include "scoreaccessibility.h"
 #include "musescore.h"
+#include "libmscore/score.h"
 #include "libmscore/segment.h"
 #include "libmscore/timesig.h"
 #include "libmscore/score.h"
@@ -20,24 +21,33 @@
 #include "pianoroll/pianoroll.h"
 
 namespace Ms {
+
+//---------------------------------------------------------
+//   ScoreViewFaactory
+//---------------------------------------------------------
+
+QAccessibleInterface* AccessibleScoreView::ScoreViewFactory(const QString& classname, QObject* object)
+{
+    QAccessibleInterface* iface = 0;
+    if (classname == QLatin1String("Ms::ScoreView") && object && object->isWidgetType()) {
+        qDebug("Creating interface for ScoreView object");
+        iface = static_cast<QAccessibleInterface*>(new AccessibleScoreView(static_cast<ScoreView*>(object)));
+    }
+    return iface;
+}
+
 //---------------------------------------------------------
 //   AccessibleScoreView
 //---------------------------------------------------------
 
-AccessibleScoreView::AccessibleScoreView(ScoreView* scView)
-    : QAccessibleWidget(scView)
-{
-    s = scView;
-}
-
 int AccessibleScoreView::childCount() const
 {
-    return 0;
+    return m_scoreView->score()->treeChildCount();
 }
 
-QAccessibleInterface* AccessibleScoreView::child(int /*index*/) const
+QAccessibleInterface* AccessibleScoreView::child(int index) const
 {
-    return 0;
+    return new AccessibleScoreItem( toElement(m_scoreView->score()->treeChild(index)), m_scoreView );
 }
 
 QAccessibleInterface* AccessibleScoreView::parent() const
@@ -47,156 +57,81 @@ QAccessibleInterface* AccessibleScoreView::parent() const
 
 QRect AccessibleScoreView::rect() const
 {
-    // TODO: calculate this ourselves?
-    //QPoint origin = s->mapToGlobal(QPoint(0, 0));
-    //return s->rect().translated(origin);
-    return QAccessibleWidget::rect();
+    return m_scoreView->rect();
 }
-
-bool AccessibleScoreView::isValid() const
-{
-    return true;
-}
-
-#if 1
-// TODO: determine if setting state explicitly would be helpful
-QAccessible::State AccessibleScoreView::state() const
-{
-    QAccessible::State st = QAccessibleWidget::state();
-    st.focusable = 1;
-    st.selectable = 1;
-    st.active = 1;
-    //st.animated = 1;
-    return st;
-}
-
-#endif
 
 QAccessible::Role AccessibleScoreView::role() const
 {
-    // TODO: determine optimum role
-    // StaticText has the advantage of being read by Windows Narrator
-    //return QAccessible::Graphic;
-    return QAccessible::StaticText;
+    return QAccessible::Tree;
 }
 
 QString AccessibleScoreView::text(QAccessible::Text t) const
 {
     switch (t) {
-    case QAccessible::Name:
-        // TODO:
-        // leave empty to prevent name from being read on value/description change
-        // name will need to be in containing widget so it is read on tab change
-        // and we will need to be sure to read that
-        //return "";
-        return s->score()->title();
-    case QAccessible::Value:
-    case QAccessible::Description: {
-        QString msg = s->score()->accessibleMessage();
-        QString info = s->score()->accessibleInfo();
-        if (msg.isEmpty()) {
-            return info;
-        }
-        s->score()->setAccessibleMessage(""); // clear the message
-        if (info.isEmpty()) {
-            return msg;
-        }
-        return tr("%1, %2").arg(msg).arg(info);
-    }
-    default:
-        return QString();
+        case QAccessible::Name:
+            return m_scoreView->score()->title();
+        case QAccessible::Value:
+        case QAccessible::Description:
+            return m_scoreView->score()->accessibleInfo();
+        default:
+            return QString();
     }
 }
 
-#if 1
-// TODO: determine best option here
-// without this override, Qt determines window by looking upwards in hierarchy
-// we can supposedly duplicate that by returning nullptr
-// qApp->focusWindow() is the "old" return value,
-// but it could conceivably refer to something other than main window, which seems wrong
-QWindow* AccessibleScoreView::window() const
+//---------------------------------------------------------
+//   AccessibleScoreItem
+//---------------------------------------------------------
+
+int AccessibleScoreItem::childCount() const
 {
-    //return nullptr;
-    //return QWdiegt::window();
-    return mscore->windowHandle();        // qApp->focusWindow();
+    return m_element->treeChildCount();
 }
 
-#endif
-
-QAccessibleInterface* AccessibleScoreView::ScoreViewFactory(const QString& classname, QObject* object)
+QAccessibleInterface* AccessibleScoreItem::child(int index) const
 {
-    QAccessibleInterface* iface = 0;
-    if (classname == QLatin1String("Ms::ScoreView") && object && object->isWidgetType()) {
-//                qDebug("Creating interface for ScoreView object");
-        iface = static_cast<QAccessibleInterface*>(new AccessibleScoreView(static_cast<ScoreView*>(object)));
+    return new AccessibleScoreItem( toElement(m_element->treeChild(index)), m_scoreView );
+}
+
+QAccessibleInterface* AccessibleScoreItem::childAt(int x, int y) const
+{
+    return new AccessibleScoreItem( m_scoreView->elementAt(m_scoreView->toLogical(QPoint(x, y))) , m_scoreView );
+}
+
+QAccessibleInterface* AccessibleScoreItem::parent() const
+{
+    // if (m_element->parent()->isScore()){
+    //     return QAccessible::queryAccessibleInterface(mscore->currentScoreView());
+    // }
+    // return QAccessible::queryAccessibleInterface(m_element->parent());
+    return nullptr;
+}
+
+QRect AccessibleScoreItem::rect() const
+{
+    return m_scoreView->toPhysical(m_element->bbox());
+}
+
+QAccessible::Role AccessibleScoreItem::role() const
+{
+    return QAccessible::TreeItem;
+}
+
+QString AccessibleScoreItem::text(QAccessible::Text t) const
+{
+    switch (t) {
+        case QAccessible::Name:
+            return m_element->userName();
+        case QAccessible::Value:
+        case QAccessible::Description:
+            return m_element->accessibleInfo();
+        default:
+            return QString();
     }
-
-    return iface;
 }
 
-void* AccessibleScoreView::interface_cast(QAccessible::InterfaceType t)
-{
-#ifdef SCOREVIEW_VALUEINTERFACE
-    if (t == QAccessible::ValueInterface) {
-        return static_cast<QAccessibleValueInterface*>(this);
-    }
-#endif
-#ifdef SCOREVIEW_IMAGEINTERFACE
-    if (t == QAccessible::ImageInterface) {
-        return static_cast<QAccessibleImageInterface*>(this);
-    }
-#endif
-    return QAccessibleWidget::interface_cast(t);
-}
-
-#ifdef SCOREVIEW_VALUEINTERFACE
-
-void AccessibleScoreView::setCurrentValue(const QVariant& val)
-{
-    QString str = val.toString();
-    s->score()->setAccessibleInfo(str);
-}
-
-QVariant AccessibleScoreView::currentValue() const
-{
-    return s->score()->accessibleInfo();
-}
-
-QVariant AccessibleScoreView::maximumValue() const
-{
-    return QString();
-}
-
-QVariant AccessibleScoreView::minimumValue() const
-{
-    return QString();
-}
-
-QVariant AccessibleScoreView::minimumStepSize() const
-{
-    return QString();
-}
-
-#endif
-
-#ifdef SCOREVIEW_IMAGEINTERFACE
-
-QString AccessibleScoreView::imageDescription() const
-{
-    return s->score()->accessibleInfo();
-}
-
-QSize AccessibleScoreView::imageSize() const
-{
-    return s->size();
-}
-
-QPoint AccessibleScoreView::imagePosition() const
-{
-    return QPoint();
-}
-
-#endif
+//---------------------------------------------------------
+//   ScoreAccessibility Stuff
+//---------------------------------------------------------
 
 ScoreAccessibility* ScoreAccessibility::inst = 0;
 
@@ -429,8 +364,8 @@ void ScoreAccessibility::updateAccessibility()
     }
 
     QObject* obj = static_cast<QObject*>(w);
-    QAccessibleValueChangeEvent vcev(obj, w->score()->accessibleInfo());
-    QAccessible::updateAccessibility(&vcev);
+    // QAccessibleValueChangeEvent vcev(obj, w->score()->accessibleInfo());
+    // QAccessible::updateAccessibility(&vcev);
     // TODO:
     // some screenreaders may respond better to other events
     // the version of Qt used may also be relevant, and platform too
@@ -497,4 +432,5 @@ void ScoreAccessibility::makeReadable(QString& s)
         s.replace(src, replacement);
     }
 }
+
 }
